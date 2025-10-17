@@ -1,11 +1,12 @@
 <template>
- <div class="app-container">
+  <div class="app-container">
     <!-- Izquierda: Formulario -->
     <div class="form-section">
       <EntrenamientoForm
         :entrenamientoEditar="entrenamientoSeleccionado"
         @guardar-entrenamiento="agregarEntrenamiento"
         @editar-entrenamiento="EditarEntrenamiento"
+        @cancelar-edicion="cancelarEdicion"
       />
     </div>
   
@@ -51,6 +52,10 @@ function EditarEntrenamiento(entrenamientoEditado) {
     }
   }
   entrenamientoSeleccionado.value = null
+}
+// Cancelar edición
+function cancelarEdicion() {
+  entrenamientoSeleccionado.value = null;
 }
 </script>
 <style scoped>

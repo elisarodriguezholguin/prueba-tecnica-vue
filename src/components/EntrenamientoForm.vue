@@ -17,10 +17,24 @@
         <label for="distancia">Distancia (km):</label>
         <input type="number" id="distancia"v-model.number="entrenamiento.distancia" step="0.01"min="0"required/>
       </div>
-      <button type="submit">{{ entrenamientoEditar ? "Actualizar" : "Guardar" }}</button>
-    </form>
+      <!-- 🟩 Botones -->
+      <div class="button-group">
+        <button type="submit">
+          {{ entrenamientoEditar ? "Actualizar" : "Guardar" }}
+        </button>
 
-    <!-- 👇 Mostrar los datos en tiempo real -->
+        <!-- Solo se muestra cuando se está editando -->
+        <button
+          v-if="entrenamientoEditar"
+          type="button"
+          class="cancel-btn"
+          @click="cancelar"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+<!-- Mostrar los datos en tiempo real -->
     <div class="resultado">
       <h3>Vista previa del entrenamiento:</h3>
       <p><strong>Fecha:</strong> {{ entrenamiento.fecha || "—" }}</p>
@@ -30,41 +44,49 @@
   </div>
 </template>
 
-<script setup>
-import { ref, watch } from "vue"; // Importamos ref y watch
-// Declarar el evento que se emitirá al guardar
-const emit = defineEmits(["guardar-entrenamiento", "editar-entrenamiento"]);
-const props = defineProps({
-  entrenamientoEditar: Object,
-});
-// Estado reactivo del formulario
-const entrenamiento = ref({ fecha: "", duracion: null, distancia: null, id: null });
-
-// Si llega un entrenamiento para editar, lo carga en el formulario
-watch(
-  () => props.entrenamientoEditar,
-  (nuevo) => {
-    if (nuevo) entrenamiento.value = { ...nuevo };
+<script>
+export default {
+  props: {
+    entrenamientoEditar: Object,
   },
-  { immediate: true }
-);
-
-function guardar() {
-  emit("guardar-entrenamiento", { ...entrenamiento.value });
-  limpiar();
-}
-
-
-function editar() {
-  console.log(entrenamiento.value)
-  emit("editar-entrenamiento", { ...entrenamiento.value });
-  limpiar();
-
-}
-
-function limpiar() {
-  entrenamiento.value = { fecha: "", duracion: null, distancia: null };
-}
+ watch: {
+    // Si recibimos datos para editar, los cargamos en el formulario
+    entrenamientoEditar: {
+      handler(nuevoValor) {
+        if (nuevoValor) {
+          this.entrenamiento = { ...nuevoValor };
+        }
+      },
+      immediate: true,
+    },
+  },
+  data() {
+    return {
+      entrenamiento: {
+        fecha: "",
+        duracion: "",
+        distancia: "",
+      },
+    };
+  },
+  methods: {
+    guardar() {
+      this.$emit("guardar-entrenamiento", { ...this.entrenamiento });
+      this.resetForm();
+    },
+    editar() {
+     this.$emit("editar-entrenamiento", { ...this.entrenamiento });
+      this.resetForm();
+    },
+    cancelar() {
+    this.resetForm();
+      this.$emit("cancelar-edicion");
+    },
+      resetForm() {
+      this.entrenamiento = { fecha: "", duracion: "", distancia: "" };
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -126,5 +148,23 @@ button:hover {
 .resultado h3 {
   margin-bottom: 10px;
   color: #2e7d32;
+}
+button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+.cancel-btn:hover {
+  background-color: #aaa;
 }
 </style>
