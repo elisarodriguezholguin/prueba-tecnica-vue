@@ -1,85 +1,131 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+ <div class="app-container">
+    <!-- Izquierda: Formulario -->
+    <div class="form-section">
+      <EntrenamientoForm
+        :entrenamientoEditar="entrenamientoSeleccionado"
+        @guardar-entrenamiento="agregarEntrenamiento"
+        @editar-entrenamiento="EditarEntrenamiento"
+      />
     </div>
-  </header>
+  
 
-  <RouterView />
+    <!-- Derecha: Lista de entrenamientos -->
+    <div class="list-section">
+      <h2>Lista de Entrenamientos</h2>
+      <div v-for="(item, index) in entrenamientos" :key="index" class="card">
+        <p><strong>Fecha:</strong> {{ item.fecha }}</p>
+        <p><strong>Duración:</strong> {{ item.duracion }} min</p>
+        <p><strong>Distancia:</strong> {{ item.distancia }} km</p>
+        <button @click="seleccionarEntrenamiento(item, index)">Editar</button>
+      </div>
+    </div>
+  </div>
 </template>
 
+<script setup>
+import { ref } from 'vue'
+import EntrenamientoForm from "./components/EntrenamientoForm.vue"
+
+const entrenamientos = ref([])
+const entrenamientoSeleccionado = ref(null)
+
+// Agregar nuevo
+function agregarEntrenamiento(nuevoEntrenamiento) {
+  entrenamientos.value.push(nuevoEntrenamiento)
+}
+
+// Seleccionar para editar
+function seleccionarEntrenamiento(entrenamiento, index) {
+  entrenamientoSeleccionado.value = { ...entrenamiento, index }
+}
+
+// Editar existente
+function EditarEntrenamiento(entrenamientoEditado) {
+  const i = entrenamientoEditado.index
+  if (i !== undefined && i !== null) {
+    entrenamientos.value[i] = {
+      fecha: entrenamientoEditado.fecha,
+      duracion: entrenamientoEditado.duracion,
+      distancia: entrenamientoEditado.distancia
+    }
+  }
+  entrenamientoSeleccionado.value = null
+}
+</script>
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+
+.app-container {
+ display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 40px;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+/* Columna izquierda (formulario) */
+.form-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+
+/* Columna derecha (lista de tarjetas) */
+.list-section {
+  flex: 1;
+  background-color: #fdfafa;
+  padding: 20px;
+  border-radius: 10px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(5, 5, 5, 0.1);
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.list-section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+.card {
+  border: 1px solid #a6d8e8;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.3s;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+/* Alternar colores: azul suave / verde suave */
+.card:nth-child(odd) {
+  background: linear-gradient(135deg, #c3e8f5, #e6f8ff);
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.card:nth-child(even) {
+  background: linear-gradient(135deg, #c7f3d4, #e9fff0);
 }
 
-nav a:first-of-type {
-  border: 0;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.card strong {
+  color: #0b3954;
 }
+
+button {
+  background-color: #5ab1c8;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #3b93ab;
+}
+
 </style>
