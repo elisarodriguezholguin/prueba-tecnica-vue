@@ -31,7 +31,10 @@
           @click="cancelar"
         >
           Cancelar
+          
         </button>
+          <!-- 🗑️ Botón para eliminar cuando se está editando -->
+
       </div>
     </form>
 <!-- Mostrar los datos en tiempo real -->
@@ -91,7 +94,7 @@ export default {
 
 <style scoped>
 .form-container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 30px;
   padding: 20px;
   border-radius: 10px;
@@ -167,4 +170,7 @@ button-group {
 .cancel-btn:hover {
   background-color: #aaa;
 }
+
+
 </style>
+
