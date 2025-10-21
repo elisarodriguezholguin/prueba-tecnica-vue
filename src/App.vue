@@ -136,6 +136,7 @@ function cancelarEdicion() {
   border-radius: 10px;
   max-height: 90vh;
   overflow-y: auto;
+
 }
 
 .container-entrenamiento {
@@ -143,12 +144,13 @@ function cancelarEdicion() {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fdfafa;
   padding: 20px;
   border-radius: 10px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 0 10px rgba(5, 5, 5, 0.1);
+  background: linear-gradient(135deg, #d1f0ff, #a8e0ff);
+  /* 💙 fondo más notorio */
 }
 
 /* 🟩 Lista de entrenamientos: tarjetas en horizontal */
