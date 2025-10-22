@@ -27,16 +27,9 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 import EntrenamientoForm from "./components/EntrenamientoForm.vue"
-
-
-
-//  Import de Firestore para eliminar documentos
-//import { doc, deleteDoc } from "firebase/firestore"
-//import { db } from "./firebase" // tu configuración de Firestore
 
 
 const entrenamientos = ref([])
