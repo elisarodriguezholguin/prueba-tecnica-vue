@@ -30,11 +30,28 @@
 <script setup>
 import { ref } from 'vue'
 import EntrenamientoForm from "./components/EntrenamientoForm.vue"
-
+import { collection, addDoc, getDocs, updateDoc, doc } from 'firebase/firestore'
+import { db } from './firebase'
+const coleccion = collection(db, 'entrenamientos')
 
 const entrenamientos = ref([])
 const entrenamientoSeleccionado = ref(null)
 
+//Metodo de Obtener 
+async function obtenerEntrenamientos() {
+  try {
+    const snapshot = await getDocs(coleccion)
+    const entrenamientos = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+    }))
+    console.log('📄 Entrenamientos obtenidos:', entrenamientos)
+    return entrenamientos
+  } catch (e) {
+    console.error('❌ Error al obtener entrenamientos:', e)
+    return []
+  }
+}
 
 // Agregar nuevo
 function agregarEntrenamiento(nuevoEntrenamiento) {

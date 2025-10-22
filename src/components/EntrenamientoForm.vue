@@ -49,20 +49,6 @@ import { ref, onMounted } from 'vue'
 
 const coleccion = collection(db, 'entrenamientos')
 
-async function obtenerEntrenamientos() {
-  try {
-    const snapshot = await getDocs(coleccion)
-    const entrenamientos = snapshot.docs.map(doc => ({
-      ...doc.data(),
-      id: doc.id,
-    }))
-    console.log('📄 Entrenamientos obtenidos:', entrenamientos)
-    return entrenamientos
-  } catch (e) {
-    console.error('❌ Error al obtener entrenamientos:', e)
-    return []
-  }
-}
 
 export default {
 
