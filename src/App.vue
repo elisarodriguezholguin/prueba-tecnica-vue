@@ -9,9 +9,10 @@
     <!-- Derecha: Lista de entrenamientos -->
     <div class="container-entrenamiento">
       <div>
-        <h2 style="">Lista de Entrenamientos</h2>
+        <h2> Lista de Entrenamientos</h2>
       </div>
       <div class="list-section">
+        <div v-if="entrenamientos.length === 0">No hay entrenamientos registrados.</div>
         <div v-for="(item, index) in entrenamientos" :key="index" class="card">
           <p><strong>Fecha:</strong> {{ item.fecha }}</p>
           <p><strong>Duración:</strong> {{ item.duracion }} min</p>
@@ -20,7 +21,7 @@
           <!-- 🔽 Agrupamos los botones -->
           <div class="acciones">
             <button class="editar-btn" @click="seleccionarEntrenamiento(item, index)">✏️ Editar</button>
-            <button class="eliminar-btn" @click="eliminarEntrenamiento(index)">🗑️ Eliminar</button>
+            <button class="eliminar-btn" @click="eliminarEntrenamiento(item, index)">🗑️ Eliminar</button>
           </div>
         </div>
       </div>
@@ -28,12 +29,22 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import EntrenamientoForm from "./components/EntrenamientoForm.vue"
-import { collection, addDoc, getDocs, updateDoc, doc } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  onSnapshot
+} from 'firebase/firestore'
 import { db } from './firebase'
-const coleccion = collection(db, 'entrenamientos')
 
+const coleccion = collection(db, 'entrenamientos')
 const entrenamientos = ref([])
 const entrenamientoSeleccionado = ref(null)
 
@@ -41,7 +52,7 @@ const entrenamientoSeleccionado = ref(null)
 async function obtenerEntrenamientos() {
   try {
     const snapshot = await getDocs(coleccion)
-    const entrenamientos = snapshot.docs.map(doc => ({
+    entrenamientos.value = snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id,
     }))
@@ -52,6 +63,10 @@ async function obtenerEntrenamientos() {
     return []
   }
 }
+
+onMounted(async () => {
+  await obtenerEntrenamientos()
+})
 
 // Agregar nuevo
 function agregarEntrenamiento(nuevoEntrenamiento) {
@@ -75,37 +90,30 @@ function EditarEntrenamiento(entrenamientoEditado) {
   }
   entrenamientoSeleccionado.value = null
 }
-// Eliminar solo local
-function eliminarEntrenamiento(index) {
-  const confirmar = window.confirm("¿Seguro que quieres eliminar este entrenamiento?");
-  if (confirmar) {
-    entrenamientos.value.splice(index, 1);
-  }
-}
-
-
-
-
-// 🔥 Función para eliminar un entrenamiento de Firestore y de la lista local
-//async function eliminarEntrenamiento(item, index) {
-//  const confirmar = confirm(`¿Seguro que quieres eliminar el entrenamiento del ${item.fecha}?`)
-// if (!confirmar) return
-
-//  try {
-//    await deleteDoc(doc(db, "entrenamientos", item.id)) // id del documento en Firestore
-//    entrenamientos.value.splice(index, 1) // eliminar de la lista local
-//    alert("Entrenamiento eliminado correctamente")
-//  } catch (error) {
-//    console.error("Error al eliminar:", error)
-//  }
-//}
-
 
 // Cancelar edición
 function cancelarEdicion() {
   entrenamientoSeleccionado.value = null;
 }
+
+// 🗑️ Eliminar entrenamiento
+const eliminarEntrenamiento = async (item, index) => {
+  const confirmar = confirm(`¿Seguro que quieres eliminar el entrenamiento del ${item.fecha}?`);
+  if (!confirmar) return;
+
+  try {
+    const refDoc = doc(db, "entrenamientos", item.id);
+    await deleteDoc(refDoc);
+    entrenamientos.value.splice(index, 1); // 🔁 Eliminar también de la lista local
+    alert("✅ Entrenamiento eliminado correctamente");
+    console.log(`🗑️ Entrenamiento eliminado con ID: ${item.id}`);
+  } catch (error) {
+    console.error("❌ Error al eliminar entrenamiento:", error);
+    alert("Ocurrió un error al eliminar el entrenamiento.");
+  }
+}
 </script>
+
 <style scoped>
 .app-container {
   display: flex;
@@ -163,21 +171,7 @@ function cancelarEdicion() {
   /* 💙 fondo más notorio */
 }
 
-/* 🟩 Lista de entrenamientos: tarjetas en horizontal */
-/*.list-section {
- 
-/*overflow-x: auto; /* desplazamiento horizontal */
-/*overflow-y: hidden;
-  box-shadow: 0 0 10px rgba(5, 5, 5, 0.1);
- }*/
 
-
-/* Contenedor interno: las tarjetas se alinean en fila */
-/*.list-section {
-/*  display: flex;
- /* flex-wrap: nowrap; /* evita que bajen a otra línea */
-/* gap: 20px;
-}
 
 /* 🧩 Estilo de las tarjetas */
 .card {

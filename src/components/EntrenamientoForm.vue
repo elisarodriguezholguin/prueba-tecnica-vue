@@ -78,15 +78,15 @@ export default {
   },
   methods: {
     async guardar() {
-
+      //try-catch esto es para intentar hacer algo y si da error que no se rompa el programa
       try {
-        const docRefid = (await addDoc(coleccion, { ...this.entrenamiento })).id
-        this.entrenamiento.id = docRefid;
-        this.$emit("guardar-entrenamiento", { ...this.entrenamiento });
-        this.resetForm();
+        const docRefid = (await addDoc(coleccion, { ...this.entrenamiento })).id // aqui guarda hacia firebase el entrenamiento
+        this.entrenamiento.id = docRefid; //aqui le estoy dando el id al entrenamiento para poder editarlo
+        this.$emit("guardar-entrenamiento", { ...this.entrenamiento }); // aqui emite el evento de gurdar de vue
+        this.resetForm(); // reinicia el form
         console.log('✅ Entrenamiento guardado con ID:', docRefid)
-        return docRefid
-      } catch (e) {
+        return docRefid // retorna el id (opcional)
+      } catch (e) { // se ejecuta en caso que exista algun error
         alert(e)
         console.error('❌ Error al guardar entrenamiento:', e)
       }
