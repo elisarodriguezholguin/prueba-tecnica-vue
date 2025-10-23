@@ -1,48 +1,108 @@
-# prueba-tecnica-vue
+# 🏋️‍♀️ Aplicación Web de Registro de Entrenamientos
 
-This template should help get you started developing with Vue 3 in Vite.
+Esta aplicación web permite a los usuarios **registrar, editar y visualizar sus entrenamientos** de manera intuitiva y en **tiempo real**.  
+Fue desarrollada con tecnologías modernas para garantizar una experiencia fluida, atractiva y eficiente.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 Características principales
 
-## Recommended Browser Setup
+- 📅 **Registro de entrenamientos:** permite ingresar fecha, duración y distancia.  
+- ✏️ **Edición de registros existentes:** actualiza fácilmente los entrenamientos guardados.  
+- 🔄 **Visualización en tiempo real:** sincronización automática con Firebase mediante `onSnapshot`.  
+- 💾 **Almacenamiento en la nube:** los datos se guardan en **Firebase Firestore**.  
+- ⚙️ **Arquitectura moderna:** construida con **Vue 3 + TypeScript**.  
+- 🌐 **Despliegue en Railway:** lista para producción, asegurando disponibilidad y rendimiento.  
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+---
 
-## Type Support for `.vue` Imports in TS
+## 🧰 Tecnologías utilizadas
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+| Tecnología | Descripción |
+|-------------|-------------|
+| **Vue 3** | Framework principal para la interfaz de usuario |
+| **TypeScript** | Tipado estático para mayor mantenibilidad |
+| **Firebase Firestore** | Base de datos en tiempo real |
+| **Vite** | Herramienta de desarrollo rápida para Vue |
+| **Railway** | Plataforma de despliegue en la nube |
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## ⚙️ Instalación y configuración
 
-## Project Setup
+1. **Clona este repositorio:**
+   ```bash
+   git clone https://github.com/elisarodriguezholguin/prueba-tecnica-vue.git
+   cd prueba-tecnica-vue
+   ```
 
-```sh
-npm install
+2. **Instala las dependencias:**
+   ```bash
+   npm install
+   ```
+
+3. **Configura Firebase:**
+   - Crea un proyecto en [Firebase Console](https://console.firebase.google.com/)
+   - Copia tus credenciales del proyecto.
+   - Crea el archivo `src/firebase.ts` con el siguiente contenido:
+     ```ts
+     import { initializeApp } from 'firebase/app'
+     import { getFirestore } from 'firebase/firestore'
+
+     const firebaseConfig = {
+       apiKey: 'TU_API_KEY',
+       authDomain: 'TU_AUTH_DOMAIN',
+       projectId: 'TU_PROJECT_ID',
+       storageBucket: 'TU_STORAGE_BUCKET',
+       messagingSenderId: 'TU_SENDER_ID',
+       appId: 'TU_APP_ID',
+     }
+
+     const app = initializeApp(firebaseConfig)
+     export const db = getFirestore(app)
+     ```
+
+4. **Ejecuta la aplicación en modo desarrollo:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Despliegue en Railway:**
+   - Crea un nuevo proyecto en [Railway.app](https://railway.app/)
+   - Conecta tu repositorio de GitHub.
+   - Railway detectará automáticamente la configuración de Vite y Vue.
+
+---
+
+## 🖥️ Estructura del proyecto
+
+```
+src/
+├── assets/                       # Archivos estáticos (imágenes, estilos, etc.)
+├── components/                   # Componentes reutilizables
+│   ├── EntrenamientoCard.vue     # Tarjeta individual de entrenamiento
+│   └── EntrenamientoForm.vue     # Formulario de registro y edición
+├── App.vue                        # Componente raíz de la aplicación
+├── firebase.ts                    # Configuración e inicialización de Firebase
+├── main.ts                        # Punto de entrada de la aplicación Vue
+├── index.html                     # Archivo HTML principal
+├── vite.config.ts                 # Configuración de Vite
+├── tsconfig.json                  # Configuración de TypeScript
+└── README.md                      # Documentación del proyecto
+
 ```
 
-### Compile and Hot-Reload for Development
 
-```sh
-npm run dev
-```
+## 🧑‍💻 Autor
 
-### Type-Check, Compile and Minify for Production
+**Elisa Rodríguez**  
+Ingeniera en Sistemas  
+Desarrolladora web enfocada en crear experiencias intuitivas y modernas.
 
-```sh
-npm run build
-```
+---
 
-### Lint with [ESLint](https://eslint.org/)
+## 📝 Licencia
 
-```sh
-npm run lint
-```
+Este proyecto está bajo la licencia **MIT**.  
+Puedes usarlo, modificarlo y distribuirlo libremente, con atribución correspondiente.
+
