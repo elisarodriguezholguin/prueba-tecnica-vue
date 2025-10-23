@@ -51,6 +51,7 @@ const entrenamientoSeleccionado = ref(null)
 //Metodo de Obtener 
 async function obtenerEntrenamientos() {
   try {
+    // HTTP GET
     const snapshot = await getDocs(coleccion)
     entrenamientos.value = snapshot.docs.map(doc => ({
       ...doc.data(),
@@ -64,6 +65,7 @@ async function obtenerEntrenamientos() {
   }
 }
 
+//Esto se ejecuta cada vez que se actualiza la pagina
 onMounted(async () => {
   await obtenerEntrenamientos()
 })
