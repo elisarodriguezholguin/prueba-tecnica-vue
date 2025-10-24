@@ -47,51 +47,54 @@ import { db } from './firebase'
 const coleccion = collection(db, 'entrenamientos')
 const entrenamientos = ref([])
 const entrenamientoSeleccionado = ref(null)
+// ----------------------
+// Real-time: onSnapshot con orden por fecha
+// ----------------------
+let unsubscribe = null
 
-//Metodo de Obtener 
-async function obtenerEntrenamientos() {
-  try {
-    // HTTP GET
-    const snapshot = await getDocs(coleccion)
-    entrenamientos.value = snapshot.docs.map(doc => ({
-      ...doc.data(),
-      id: doc.id,
+onMounted(() => {
+  // Ajusta 'desc' o 'asc' según necesites
+  const q = query(coleccion, orderBy('fecha', 'desc'))
+  unsubscribe = onSnapshot(q, (snapshot) => {
+    entrenamientos.value = snapshot.docs.map(d => ({
+      ...d.data(),
+      id: d.id
     }))
-    console.log('📄 Entrenamientos obtenidos:', entrenamientos)
-    return entrenamientos
-  } catch (e) {
-    console.error('❌ Error al obtener entrenamientos:', e)
-    return []
-  }
-}
-
-//Esto se ejecuta cada vez que se actualiza la pagina
-onMounted(async () => {
-  await obtenerEntrenamientos()
+    console.log('🔁 Snapshot recibido - entrenamientos actualizados:', entrenamientos.value)
+  }, (error) => {
+    console.error('❌ Error en onSnapshot:', error)
+  })
 })
+onUnmounted(() => {
+  if (typeof unsubscribe === 'function') unsubscribe()
+})
+// ----------------------
+// Acciones que llaman desde componentes
+// ----------------------
 
-// Agregar nuevo
+// NOTA: Con onSnapshot, no es necesario "push" manual al agregar o
+// editar — la UI se actualizará cuando Firebase confirme el cambio.
+// Se puede seguir emitiendo eventos desde EntrenamientoForm que creen/editen
+// en Firestore (addDoc/updateDoc) y el snapshot hará lo demás.
+
 function agregarEntrenamiento(nuevoEntrenamiento) {
-  entrenamientos.value.push(nuevoEntrenamiento)
+  // Opcional: si quieres mantener compatibilidad imediata en UI, podrías:
+  // entrenamientos.value.unshift(nuevoEntrenamiento) // pero el snapshot será la fuente de la verdad
+  // Recomiendo NO hacer push manual si confías en onSnapshot.
+  console.log('↗️ Se solicitó agregar (la lista real la actualiza Firestore via onSnapshot):', nuevoEntrenamiento)
 }
 
-// Seleccionar para editar
 function seleccionarEntrenamiento(entrenamiento, index) {
   entrenamientoSeleccionado.value = { ...entrenamiento, index }
 }
-
-// Editar existente
 function EditarEntrenamiento(entrenamientoEditado) {
-  const i = entrenamientoEditado.index
-  if (i !== undefined && i !== null) {
-    entrenamientos.value[i] = {
-      fecha: entrenamientoEditado.fecha,
-      duracion: entrenamientoEditado.duracion,
-      distancia: entrenamientoEditado.distancia
-    }
-  }
+  // Si estás enviando updateDoc a Firestore desde el form,
+  // el snapshot actualizará la lista automáticamente.
+  console.log('✏️ Editado (la lista la actualiza Firestore via onSnapshot):', entrenamientoEditado)
   entrenamientoSeleccionado.value = null
 }
+
+
 
 // Cancelar edición
 function cancelarEdicion() {
@@ -106,7 +109,8 @@ const eliminarEntrenamiento = async (item, index) => {
   try {
     const refDoc = doc(db, "entrenamientos", item.id);
     await deleteDoc(refDoc);
-    entrenamientos.value.splice(index, 1); // 🔁 Eliminar también de la lista local
+    //entrenamientos.value.splice(index, 1); // 🔁 Eliminar también de la lista 
+    // No es necesario splicear localmente: onSnapshot actualizará la lista.
     alert("✅ Entrenamiento eliminado correctamente");
     console.log(`🗑️ Entrenamiento eliminado con ID: ${item.id}`);
   } catch (error) {
