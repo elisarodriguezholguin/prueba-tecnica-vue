@@ -52,10 +52,16 @@ const entrenamientoSeleccionado = ref(null)
 // ----------------------
 let unsubscribe = null
 
+//Ciclo de vida de la app
+//onMounted se ejecuta cuando se inicia o actualiza la pagina
 onMounted(() => {
-  // Ajusta 'desc' o 'asc' según necesites
+  // Ajusta 'desc' la fecha
+  // order by == ordernar por
+  //query == busqueda
+
   const q = query(coleccion, orderBy('fecha', 'desc'))
-  unsubscribe = onSnapshot(q, (snapshot) => {
+  //unsubscribe == programacion reactiva (reaciona a eventos)
+  unsubscribe = onSnapshot(q, (snapshot) => { //Evento activa con q 
     entrenamientos.value = snapshot.docs.map(d => ({
       ...d.data(),
       id: d.id
@@ -65,22 +71,16 @@ onMounted(() => {
     console.error('❌ Error en onSnapshot:', error)
   })
 })
+//onUnmounted se ejecuta cuando desaparece (se cierra) la pagina//cuando el componente se desmonta
 onUnmounted(() => {
   if (typeof unsubscribe === 'function') unsubscribe()
 })
 // ----------------------
 // Acciones que llaman desde componentes
 // ----------------------
-
-// NOTA: Con onSnapshot, no es necesario "push" manual al agregar o
-// editar — la UI se actualizará cuando Firebase confirme el cambio.
-// Se puede seguir emitiendo eventos desde EntrenamientoForm que creen/editen
-// en Firestore (addDoc/updateDoc) y el snapshot hará lo demás.
+//Funciones de referencia para saber que todo este ok
 
 function agregarEntrenamiento(nuevoEntrenamiento) {
-  // Opcional: si quieres mantener compatibilidad imediata en UI, podrías:
-  // entrenamientos.value.unshift(nuevoEntrenamiento) // pero el snapshot será la fuente de la verdad
-  // Recomiendo NO hacer push manual si confías en onSnapshot.
   console.log('↗️ Se solicitó agregar (la lista real la actualiza Firestore via onSnapshot):', nuevoEntrenamiento)
 }
 
@@ -88,20 +88,16 @@ function seleccionarEntrenamiento(entrenamiento, index) {
   entrenamientoSeleccionado.value = { ...entrenamiento, index }
 }
 function EditarEntrenamiento(entrenamientoEditado) {
-  // Si estás enviando updateDoc a Firestore desde el form,
-  // el snapshot actualizará la lista automáticamente.
   console.log('✏️ Editado (la lista la actualiza Firestore via onSnapshot):', entrenamientoEditado)
   entrenamientoSeleccionado.value = null
 }
-
-
 
 // Cancelar edición
 function cancelarEdicion() {
   entrenamientoSeleccionado.value = null;
 }
 
-// 🗑️ Eliminar entrenamiento
+// Eliminar entrenamiento
 const eliminarEntrenamiento = async (item, index) => {
   const confirmar = confirm(`¿Seguro que quieres eliminar el entrenamiento del ${item.fecha}?`);
   if (!confirmar) return;
@@ -109,8 +105,6 @@ const eliminarEntrenamiento = async (item, index) => {
   try {
     const refDoc = doc(db, "entrenamientos", item.id);
     await deleteDoc(refDoc);
-    //entrenamientos.value.splice(index, 1); // 🔁 Eliminar también de la lista 
-    // No es necesario splicear localmente: onSnapshot actualizará la lista.
     alert("✅ Entrenamiento eliminado correctamente");
     console.log(`🗑️ Entrenamiento eliminado con ID: ${item.id}`);
   } catch (error) {
@@ -133,7 +127,7 @@ const eliminarEntrenamiento = async (item, index) => {
 }
 
 
-/* 📏 Columna izquierda (Formulario) más grande */
+/* Columna izquierda (Formulario) más grande */
 .form-section {
   flex: 1, 2;
   /* aumentamos el ancho del formulario */
@@ -174,12 +168,12 @@ const eliminarEntrenamiento = async (item, index) => {
   overflow-y: auto;
   box-shadow: 0 0 10px rgba(5, 5, 5, 0.1);
   background: linear-gradient(135deg, #d1f0ff, #a8e0ff);
-  /* 💙 fondo más notorio */
+  /*fondo notorio */
 }
 
 
 
-/* 🧩 Estilo de las tarjetas */
+/* Estilo de tarjetas */
 .card {
   border: 1px solid #a6d8e8;
   border-radius: 12px;
@@ -218,7 +212,7 @@ const eliminarEntrenamiento = async (item, index) => {
 
 .acciones button {
   flex: none;
-  /* ya no crecen automáticamente */
+  /* sin aumento automáticamente */
   width: 100px;
   /* ancho fijo */
   padding: 6px 12px;
@@ -228,9 +222,6 @@ const eliminarEntrenamiento = async (item, index) => {
   cursor: pointer;
 }
 
-
-
-/* Pequeño efecto al pasar el mouse */
 
 .card strong {
   color: #0b3954;
@@ -254,12 +245,10 @@ button:hover {
 
 .acciones button:first-child {
   background-color: #27d17c;
-  /* verde para editar */
 }
 
 .acciones button:last-child {
   background-color: #e24e4b;
-  /* rojo para eliminar */
 }
 
 .acciones button:hover {

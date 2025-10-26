@@ -1,7 +1,7 @@
 # 🏋️‍♀️ Aplicación Web de Registro de Entrenamientos
 
 Esta aplicación web permite a los usuarios **registrar, editar y visualizar sus entrenamientos** de manera intuitiva y en **tiempo real**.  
-Fue desarrollada con tecnologías modernas para garantizar una experiencia fluida, atractiva y eficiente.
+Desarrollada con tecnologías modernas como tyScript, Vue 3 ,para garantizar una experiencia fluida, atractiva y eficiente.
 
 ---
 
@@ -12,7 +12,7 @@ Fue desarrollada con tecnologías modernas para garantizar una experiencia fluid
 - 🔄 **Visualización en tiempo real:** sincronización automática con Firebase mediante `onSnapshot`.  
 - 💾 **Almacenamiento en la nube:** los datos se guardan en **Firebase Firestore**.  
 - ⚙️ **Arquitectura moderna:** construida con **Vue 3 + TypeScript**.  
-- 🌐 **Despliegue en Railway:** lista para producción, asegurando disponibilidad y rendimiento.  
+- 🌐 **Despliegue en Railway:** lista para producción, asegurando disponibilidad y rendimiento el cual esta vinculada  con GitHub que es detectado por Railway, lo cual posibilita el despliegue automático de la aplicación sin intervención manual, manteniendo siempre la versión más reciente de este proyecto.
 
 ---
 

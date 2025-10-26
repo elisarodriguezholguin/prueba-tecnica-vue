@@ -55,6 +55,7 @@ export default {
   props: {
     entrenamientoEditar: Object,
   },
+  //Subscriber - suscriptor de eventos
   watch: {
     // Si recibimos datos para editar, los cargamos en el formulario
     entrenamientoEditar: {
@@ -79,6 +80,7 @@ export default {
   methods: {
     async guardar() {
       //try-catch esto es para intentar hacer algo y si da error que no se rompa el programa
+      //Este metodo, permite conectarse con  firestore y agregar un entrenamiento
       try {
         const docRefid = (await addDoc(coleccion, { ...this.entrenamiento })).id // aqui guarda hacia firebase el entrenamiento
         this.entrenamiento.id = docRefid; //aqui le estoy dando el id al entrenamiento para poder editarlo
@@ -91,6 +93,7 @@ export default {
         console.error('❌ Error al guardar entrenamiento:', e)
       }
     },
+    // Este metodo ,permite conectarse con  firestore y editar un entrenamiento
     async editar() {
       console.log(this.entrenamiento.id)
       try {
@@ -112,11 +115,6 @@ export default {
       this.entrenamiento = { fecha: "", duracion: "", distancia: "" };
     },
   },
-  setup() {
-    onMounted(async () => {
-      //await obtenerEntrenamientos()
-    })
-  }
 };
 </script>
 
