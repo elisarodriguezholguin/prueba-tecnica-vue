@@ -17,7 +17,7 @@
         <label for="distancia">Distancia (km):</label>
         <input type="number" id="distancia" v-model.number="entrenamiento.distancia" step="0.01" min="0" required />
       </div>
-      <!-- 🟩 Botones -->
+      <!-- Botones -->
       <div class="button-group">
         <button type="submit">
           {{ entrenamientoEditar ? "Actualizar" : "Guardar" }}
