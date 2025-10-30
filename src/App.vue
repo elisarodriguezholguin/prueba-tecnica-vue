@@ -18,7 +18,7 @@
           <p><strong>Duración:</strong> {{ item.duracion }} min</p>
           <p><strong>Distancia:</strong> {{ item.distancia }} km</p>
 
-          <!-- 🔽 Agrupamos los botones -->
+          <!--  Agrupamos los botones -->
           <div class="acciones">
             <button class="editar-btn" @click="seleccionarEntrenamiento(item, index)">✏️ Editar</button>
             <button class="eliminar-btn" @click="eliminarEntrenamiento(item, index)">🗑️ Eliminar</button>

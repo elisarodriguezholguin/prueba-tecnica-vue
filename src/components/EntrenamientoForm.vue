@@ -17,7 +17,7 @@
         <label for="distancia">Distancia (km):</label>
         <input type="number" id="distancia" v-model.number="entrenamiento.distancia" step="0.01" min="0" required />
       </div>
-      <!-- Botones -->
+      <!--  Botones -->
       <div class="button-group">
         <button type="submit">
           {{ entrenamientoEditar ? "Actualizar" : "Guardar" }}
@@ -28,7 +28,7 @@
           Cancelar
 
         </button>
-        <!-- 🗑️ Botón para eliminar cuando se está editando -->
+        <!--  Botón para eliminar cuando se está editando -->
 
       </div>
     </form>
@@ -49,14 +49,14 @@ import { ref, onMounted } from 'vue'
 
 const coleccion = collection(db, 'entrenamientos')
 
-
+//Define una prop entrenamientoEditar que el componente recibe desde el padre
 export default {
 
   props: {
     entrenamientoEditar: Object,
   },
-  //Subscriber - suscriptor de eventos
-  watch: {
+  watch: {  //Subscriber - suscriptor de eventos
+
     // Si recibimos datos para editar, los cargamos en el formulario
     entrenamientoEditar: {
       handler(nuevoValor) {
@@ -67,7 +67,7 @@ export default {
       immediate: true,
     },
   },
-  data() {
+  data() { //define el objeto reactivo entrenamiento usado por v-model en el template.
     return {
       entrenamiento: {
         id: "",
@@ -77,7 +77,7 @@ export default {
       },
     };
   },
-  methods: {
+  methods: { //Para recibir los entrenamientos para guardar
     async guardar() {
       //try-catch esto es para intentar hacer algo y si da error que no se rompa el programa
       //Este metodo, permite conectarse con  firestore y agregar un entrenamiento
@@ -107,6 +107,7 @@ export default {
         console.error('❌ Error al editar entrenamiento:', e)
       }
     },
+    //limpia el formulario y notifica al padre que se canceló la edición; resetForm() reinicia el objeto local.
     cancelar() {
       this.resetForm();
       this.$emit("cancelar-edicion");
@@ -179,7 +180,7 @@ button:hover {
   color: #2e7d32;
 }
 
-button-group {
+.button-group {
   display: flex;
   gap: 10px;
   margin-top: 10px;
