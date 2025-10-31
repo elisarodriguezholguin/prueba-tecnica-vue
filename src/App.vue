@@ -43,7 +43,7 @@ import {
   onSnapshot
 } from 'firebase/firestore'
 import { db } from './firebase'
-
+//Referencias y estado reactivo ------ para renderizar la lista y para saber qué entrenamiento está en modo edición.
 const coleccion = collection(db, 'entrenamientos')
 const entrenamientos = ref([])
 const entrenamientoSeleccionado = ref(null)
@@ -53,7 +53,7 @@ const entrenamientoSeleccionado = ref(null)
 let unsubscribe = null
 
 //Ciclo de vida de la app
-//onMounted se ejecuta cuando se inicia o actualiza la pagina
+//onMounted se ejecuta cuando se inicia o actualiza la pagina onMounted — establecer escucha en tiempo real
 onMounted(() => {
   // Ajusta 'desc' la fecha
   // order by == ordernar por
@@ -71,14 +71,14 @@ onMounted(() => {
     console.error('❌ Error en onSnapshot:', error)
   })
 })
-//onUnmounted se ejecuta cuando desaparece (se cierra) la pagina//cuando el componente se desmonta
+//onUnmounted se ejecuta cuando desaparece (se cierra) la pagina//cuando el componente se desmonta -limpiar la suscripcion
 onUnmounted(() => {
   if (typeof unsubscribe === 'function') unsubscribe()
 })
 // ----------------------
 // Acciones que llaman desde componentes
 // ----------------------
-//Funciones de referencia para saber que todo este ok
+//Funciones de referencia para saber que todo este ok ---responden a eventos del formulario
 
 function agregarEntrenamiento(nuevoEntrenamiento) {
   console.log('↗️ Se solicitó agregar (la lista real la actualiza Firestore via onSnapshot):', nuevoEntrenamiento)
@@ -101,7 +101,8 @@ function cancelarEdicion() {
 const eliminarEntrenamiento = async (item, index) => {
   const confirmar = confirm(`¿Seguro que quieres eliminar el entrenamiento del ${item.fecha}?`);
   if (!confirmar) return;
-
+  //realiza la acción destructiva (borrar) directamente en Firestore. Al borrar el documento, 
+  // la suscripción onSnapshot notará el cambio y actualizará entrenamientos.value
   try {
     const refDoc = doc(db, "entrenamientos", item.id);
     await deleteDoc(refDoc);

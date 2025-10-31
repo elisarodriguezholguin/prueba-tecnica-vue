@@ -49,7 +49,7 @@ import { ref, onMounted } from 'vue'
 
 const coleccion = collection(db, 'entrenamientos')
 
-//Define una prop entrenamientoEditar que el componente recibe desde el padre
+//Define una prop entrenamiento Editar que el componente recibe desde el padre
 export default {
 
   props: {
@@ -67,7 +67,7 @@ export default {
       immediate: true,
     },
   },
-  data() { //define el objeto reactivo entrenamiento usado por v-model en el template.
+  data() {
     return {
       entrenamiento: {
         id: "",
@@ -93,7 +93,7 @@ export default {
         console.error('❌ Error al guardar entrenamiento:', e)
       }
     },
-    // Este metodo ,permite conectarse con  firestore y editar un entrenamiento
+    // Este metodo ,permite conectarse con  firestore y ACTUALIZAR un entrenamiento
     async editar() {
       console.log(this.entrenamiento.id)
       try {
